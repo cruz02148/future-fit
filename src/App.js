@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from 'react'
+import './styles/App.scss'
 
-function App() {
+import Exercises from './components/Exercises'
+import ExerciseDetail from './components/ExerciseDetail'
+
+const EXERCISE_API_URL = 'https://candidate.staging.future.co/sandbox/api/exercises'
+
+const App = () => {
+  const [exerciseList, setExerciseList] = useState([])
+  const [selectedExercise, setSelectedExercise] = useState({})
+
+  useEffect(() => {
+    const fetchExercises = async () => {
+      const exerciseRawData = await fetch(EXERCISE_API_URL)
+      const exerciseListJson = await exerciseRawData.json()
+      setExerciseList(exerciseListJson)
+    }
+
+    fetchExercises()
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='container'>
+      <Exercises
+        exercises={exerciseList}
+        selectedExercise={selectedExercise}
+        setSelectedExercise={setSelectedExercise}
+      />
+      <ExerciseDetail exercise={selectedExercise} />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
